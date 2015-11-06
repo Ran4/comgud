@@ -35,6 +35,12 @@ class Game(object):
                 self.players[-1].favoriteFruit = "strawberry"
             elif i == 1:
                 self.players[-1].favoriteFruit = "banana"
+                
+    def reset(self):
+        for player in self.players:
+            if player.po:
+                player.po.hp = player.po.maxHp
+        print "Game was reset!"
         
     def update(self, key):
         self.gameTime += 1

@@ -4,6 +4,8 @@ GRAVITY_X, GRAVITY_Y = 0, 200.0
 
 BULLET_REMOVE_BORDER = 60 #remove bullets when they're this many pixels 
                           #outside of a border
+          
+COLLISION_DIST = 35
 
 #BG_COLOR = (255,255,255) #white
 BG_COLOR = (200,200,240)

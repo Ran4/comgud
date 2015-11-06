@@ -143,9 +143,12 @@ class Player(object):
     def draw(self, game, surface, img, fnt):
         if self.po:
             x, y = self.po.pos.x, self.po.pos.y
-            
+            height = self.h * max(0, self.po.hp) / self.po.maxHp
+        else:
+            height = self.h
+        
         if self.id == 0 or self.id == 1:
-            area=(self.id*self.w,0, self.w, self.h)
+            area=(self.id*self.w,0, self.w, height)
         else:
             area=(0,0,  30, 40) #he-man
         

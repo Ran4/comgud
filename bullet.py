@@ -15,6 +15,7 @@ class Bullet(object):
         self.po.invulnerable = True
         self.id = None
         self.bulletType = None
+        self.damage = 6
         self.BULLET_SPEED = 900.0
         self.owner = None
         
@@ -29,6 +30,25 @@ class Bullet(object):
                     pos.y < -con.BULLET_REMOVE_BORDER or \
                     pos.y > game.screenh + con.BULLET_REMOVE_BORDER:
                 self.markedForRemoval = True
+                return
+                
+            for player in game.players:
+                if self.owner != player.id and player.po and \
+                        (self.po.pos-player.po.pos).len() < con.COLLISION_DIST:
+                    #print "player %s was hit!" % player.id
+                    
+                    if player.id == 1: #HANDICAP FOR P2
+                        player.po.hp -= self.damage / 2.0
+                    else:
+                        player.po.hp -= self.damage
+                    
+                    if player.po.hp <= 11.0: #random value since we're not
+                                                #drawing from the top
+                        player.po.hp = player.po.maxHp
+                        print "player with id=%s died!" % player.id
+                        
+                    self.markedForRemoval = True
+                    return
             
         #self.updateControls(game, key)
             

@@ -51,6 +51,8 @@ def main():
                     game.exit = True
                 elif event.key == K_RETURN:
                     setScreen(game, toggle=True)
+                elif event.key == K_r:
+                    game.reset()
                 elif event.key == K_F1:
                     print "fps: %s" % round(game.fps, 1)
         
