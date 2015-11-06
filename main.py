@@ -5,7 +5,9 @@ import pygame
 from pygame.locals import *
 
 import constants as con
+print "bef import game in MAIN"
 from game import Game
+print "after import game in MAIN"
 def setScreen(game, toggle=False):
     if toggle:
         game.fullscreen = not game.fullscreen
@@ -21,8 +23,7 @@ def main():
     pygame.display.set_caption("Python+Pygame game")
     
     game = Game()
-    game.bgColor = (255,255,255) #white
-    game.screensize = game.screenw,game.screenh = (800,600)
+    game.bgColor = con.BG_COLOR
     game.fullscreen = False
     screen = setScreen(game)
     pygame.mixer.init()
@@ -80,6 +81,7 @@ def loadImages():
     imagenames = [
     ["players", opj("data","players","players.png")],
     ["strawberry", opj("data","bullets","strawberry.png")],
+    ["banana", opj("data","bullets","banana.png")],
     ]
     img = {}
     for name in imagenames:
