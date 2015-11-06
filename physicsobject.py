@@ -8,7 +8,7 @@ V3 = Vector3
 class PhysicsObject(object):
     def __init__(self, m=50.0, pos=V3(), v=V3(), a=V3(), f=V3(),
             owner=None):
-        self.m = 50.0
+        self.m = m
         self.pos = V3()
         self.v = V3()
         self.a = V3()
