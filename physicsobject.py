@@ -22,7 +22,7 @@ class PhysicsObject(object):
         self.gravityFactor = 1.0 #0.0 means don't apply gravity
     
     def updatePhysics(self, game):
-        self.f += game.gravity * self.m
+        self.f += game.gravity * self.gravityFactor * self.m
         
         self.v += V3()
         
