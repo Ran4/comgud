@@ -23,8 +23,6 @@ def main():
     pygame.display.set_caption("Python+Pygame game")
     
     game = Game()
-    game.bgColor = con.BG_COLOR
-    game.fullscreen = False
     screen = setScreen(game)
     pygame.mixer.init()
     

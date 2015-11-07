@@ -16,6 +16,9 @@ class Game(object):
         self.gameTime = 0
         self.gravity = V3(con.GRAVITY_X, con.GRAVITY_Y)
         
+        self.bgColor = con.BG_COLOR
+        self.fullscreen = con.START_IN_FULLSCREEN
+        
         self.dt = 1/60.
         
         self.players = []

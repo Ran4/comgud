@@ -53,8 +53,8 @@ class Player(object):
                     pos.y = game.screenh - con.BOTTOM_HEIGHT - self.h
                 else:
                     self.po.v.x *= 0.9
-                    self.po.v.y *= -0.6
-                    
+                    self.po.v.y *= con.BOUNCE_FACTOR_ON_FLOOR
+
                 if pos.y + self.h >= game.screenh - con.BOTTOM_HEIGHT:
                     pos.y = game.screenh - con.BOTTOM_HEIGHT - self.h
                     self.po.v.x *= 0.7
