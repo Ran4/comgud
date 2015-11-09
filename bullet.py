@@ -12,22 +12,20 @@ V3 = Vector3
 class Bullet(object):
     def __init__(self):
         #self.po = PhysicsObject(m=2.7, owner=self)
-        self.po = PhysicsObject(m=1.7, owner=self)
+        self.po = PhysicsObject(m=2*1.7, owner=self)
         self.po.invulnerable = True
         self.id = None
         self.bulletType = None
         self.damage = 2
-        #self.BULLET_SPEED = 900.0
-        #self.BULLET_SPEED = 600.0
         self.BULLET_SPEED = 700.0
         self.owner = None
 	self.isVisisble = True
 	#self.ttl = None
 	self.ttl = 120
 
-        #self.po.gravityFactor = 5.0
         #self.po.gravityFactor = 0.0
-        self.po.gravityFactor = 0.2
+        #self.po.gravityFactor = 0.4
+        self.po.gravityFactor = 0.64
         
         self.markedForRemoval = False
         
@@ -39,8 +37,12 @@ class Bullet(object):
                     pos.x > game.screenw + con.BULLET_REMOVE_BORDER or \
                     pos.y < -con.BULLET_REMOVE_BORDER or \
                     pos.y > game.screenh + con.BULLET_REMOVE_BORDER or \
-		    (pos - V3(game.screenw/2.0, game.screenh/2.0)).len() < 48.0 or \
 		    self.ttl is not None and self.ttl <= 0:
+                self.markedForRemoval = True
+                return
+            
+            if game.vectorToMiddle(pos).len() < game.blackHoleSize:
+                game.blackHoleSize += con.BLACK_HOLE_INCREASE_BY_BULLET
                 self.markedForRemoval = True
                 return
                 

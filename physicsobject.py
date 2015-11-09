@@ -24,13 +24,13 @@ class PhysicsObject(object):
     def updatePhysics(self, game):
         #self.f += game.gravity * self.gravityFactor * self.m
         middleOfScreen = V3(game.screenw/2.0, game.screenh/2.0)
-        v = middleOfScreen - self.pos
-        c = con.BLACK_HOLE_GRAVITY_STRENGTH * self.gravityFactor
-        r2 = 0.05
-        v *= c * r2
-        self.f += v
+        pullStrength = con.BLACK_HOLE_GRAVITY_STRENGTH * self.gravityFactor**2
+        f = (middleOfScreen - self.pos) * pullStrength
+        self.f += f
         
-        #self.f += game.gravity * self.gravityFactor * self.m
+        #self.v += f * 1e-4 * (self.gravityFactor)**2
+        if self.owner.id == 1:
+            print "pullStrength:", pullStrength
         
         self.v += V3()
         

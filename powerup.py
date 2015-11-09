@@ -32,7 +32,8 @@ class Powerup(object):
 
         #self.po.gravityFactor = 5.0
         #self.po.gravityFactor = 0.0
-        self.po.gravityFactor = 0.2
+        #self.po.gravityFactor = 0.2
+        self.po.gravityFactor = 0.9
         
         self.markedForRemoval = False
         
@@ -76,7 +77,7 @@ class Powerup(object):
                     player.po.gravityFactor = max(1.0, player.po.gravityFactor - 0.25)
                 elif self.type == "gun":
                     player.TIME_BETWEEN_SHOTS = \
-                            max(1, player.TIME_BETWEEN_SHOTS - 1)
+                            max(1, player.TIME_BETWEEN_SHOTS - 4)
                     
                 self.markedForRemoval = True
                 return

@@ -20,6 +20,8 @@ class Game(object):
         self.bgColor = con.BG_COLOR
         self.fullscreen = con.START_IN_FULLSCREEN
         
+        self.blackHoleSize = con.BLACK_HOLE_START_SIZE
+        
         self.dt = 1/60.
         
         self.players = []
@@ -43,6 +45,14 @@ class Game(object):
     def update(self, key):
         self.gameTime += 1
         self.dt = 1/60.
+        
+        #if self.gameTime % 5 == 0:
+            #self.blackHoleSize += 1
+            
+        if self.gameTime % 30 == 0:
+            self.blackHoleSize += 1
+        elif self.gameTime % 30 == 5:
+            self.blackHoleSize -= 1
         
         if self.gameTime > 1 and self.gameTime % con.POWERUP_SPAWN_DELAY == 0:
             p = Powerup()
@@ -78,7 +88,7 @@ class Game(object):
             powerup.draw(self, surface, img, fnt)
 
         pygame.draw.circle(surface, con.BLACK_HOLE_COLOR, (self.screenw/2, self.screenh/2),
-            con.BLACK_HOLE_SIZE, 0)
+            int(self.blackHoleSize), 0)
         
         #draw text
         percentText = ", ".join(["p%s: %s %%" % \

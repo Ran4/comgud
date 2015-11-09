@@ -6,14 +6,13 @@ from pygame.locals import *
 import constants as con
 import game as game
 from libvector3 import Vector3
-print "bef 'from physicsObject import PhysicsObject'"
 from physicsobject import PhysicsObject
-print "after 'from physicsObject import PhysicsObject'"
 from bullet import Bullet
 V3 = Vector3
 
 class Player(object):
     def __init__(self, id=None):
+        #self.po = PhysicsObject(m=50.0, owner=self)
         self.po = PhysicsObject(m=50.0, owner=self)
         self.po.invulnerable = False
         self.id = id
@@ -29,7 +28,9 @@ class Player(object):
         self.respawn()
         
     def respawn(self):
-        self.TIME_BETWEEN_SHOTS = 8
+        #self.TIME_BETWEEN_SHOTS = 8
+        #self.TIME_BETWEEN_SHOTS = 16
+        self.TIME_BETWEEN_SHOTS = 24
         self.timeUntilNextShot = 0
         self.timeUntilNextShot2 = 0
         
@@ -62,8 +63,9 @@ class Player(object):
             self.po.updatePhysics(game)
 
 	    if game.vectorToMiddle(self.po.pos + V3(self.hw, self.hh)).len() \
-                    < con.BLACK_HOLE_SIZE:
+                    < game.blackHoleSize:
                 self.respawn()
+                game.blackHoleSize += con.BLACK_HOLE_INCREASE_BY_PLAYER
             
             pos = self.po.pos
             if pos.x < 0 and self.po.v.x < 0:
