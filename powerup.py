@@ -12,32 +12,24 @@ V3 = Vector3
 
 class Powerup(object):
     def __init__(self):
-        self.po = PhysicsObject(m=50.0, owner=self)
+        #self.po = PhysicsObject(m=50.0, owner=self)
+        self.po = PhysicsObject(m=5, owner=self)
         self.maxHp = 5
         self.hp = self.maxHp
         self.po.invulnerable = True
         self.id = None
         self.owner = None
         
-        x = random.randint(1, 2)
-        if x == 1:
-            self.type = "health"
-        elif x == 2:
-            self.type = "gun"
-        else:
-            self.type = None
+        self.type = random.choice(["health", "gun"])
         
         self.isVisible = True
 	self.ttl = None
 
-        #self.po.gravityFactor = 5.0
-        #self.po.gravityFactor = 0.0
-        #self.po.gravityFactor = 0.2
-        self.po.gravityFactor = 0.9
+        self.po.gravityFactor = 0.6
         
         self.markedForRemoval = False
         
-    def respawn(self):
+    def respawn(self, game):
         if self.po:
             self.po.gravityFactor = con.GRAVITY_FACTOR_POWERUP_DEFAULT
             
@@ -77,7 +69,7 @@ class Powerup(object):
                     player.po.gravityFactor = max(1.0, player.po.gravityFactor - 0.25)
                 elif self.type == "gun":
                     player.TIME_BETWEEN_SHOTS = \
-                            max(1, player.TIME_BETWEEN_SHOTS - 4)
+                            max(1, player.TIME_BETWEEN_SHOTS - 2)
                     
                 self.markedForRemoval = True
                 return

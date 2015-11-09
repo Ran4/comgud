@@ -6,6 +6,8 @@ from pygame.locals import *
 
 import constants as con
 from game import Game
+import player
+
 def setScreen(game, toggle=False):
     if toggle:
         game.fullscreen = not game.fullscreen
@@ -51,20 +53,20 @@ def main():
                 elif event.key == K_r:
                     game.reset()
                     
+                elif event.key == K_n: #add another player
+                    game.players.append(player.Player(game,
+                        id=len(game.players)))
                     
                 elif event.key == K_1:
                     if len(game.players) >= 1:
-                        game.players[0].po.gravityFactor += \
-                                3*con.GRAVITY_FACTOR_PLAYER_INCREASE_PER_HIT
+                        game.players[0].po.gravityFactor += 0.1
                 elif event.key == K_2:
                     if len(game.players) >= 2:
-                        game.players[1].po.gravityFactor += \
-                                4*con.GRAVITY_FACTOR_PLAYER_INCREASE_PER_HIT
+                        game.players[1].po.gravityFactor += 0.1
                                 
                 elif event.key == K_3:
                     if len(game.players) >= 3:
-                        game.players[2].po.gravityFactor += \
-                                3*con.GRAVITY_FACTOR_PLAYER_INCREASE_PER_HIT
+                        game.players[2].po.gravityFactor += 0.1
                     
                 elif event.key == K_F1:
                     print "fps: %s" % round(game.fps, 1)

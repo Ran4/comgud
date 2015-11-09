@@ -29,8 +29,9 @@ class PhysicsObject(object):
         self.f += f
         
         #self.v += f * 1e-4 * (self.gravityFactor)**2
-        if self.owner.id == 1:
-            print "pullStrength:", pullStrength
+        if hasattr(self.owner, "type"):
+            po = self.owner.po
+            #print "", po.v
         
         self.v += V3()
         

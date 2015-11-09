@@ -11,12 +11,13 @@ from bullet import Bullet
 V3 = Vector3
 
 class Player(object):
-    def __init__(self, id=None):
+    def __init__(self, game, id=None):
         #self.po = PhysicsObject(m=50.0, owner=self)
         self.po = PhysicsObject(m=50.0, owner=self)
         self.po.invulnerable = False
         self.id = id
         self.numGuns = 2
+        self.livesLeft = con.NUM_PLAYER_LIVES
         
         self.favoriteFruit = None
         
@@ -25,11 +26,9 @@ class Player(object):
         self.hw = self.w / 2
         self.hh = self.h / 2
         
-        self.respawn()
+        self.respawn(game)
         
-    def respawn(self):
-        #self.TIME_BETWEEN_SHOTS = 8
-        #self.TIME_BETWEEN_SHOTS = 16
+    def respawn(self, game):
         self.TIME_BETWEEN_SHOTS = 24
         self.timeUntilNextShot = 0
         self.timeUntilNextShot2 = 0
@@ -38,15 +37,16 @@ class Player(object):
             self.po.gravityFactor = con.GRAVITY_FACTOR_PLAYER_DEFAULT
             
             angle = 2*math.pi*random.random()
-            ringRadius = 300
-            spawnRadius = 200 + ringRadius * random.random()
+            ringRadius = 50
+            spawnRadius = max(game.blackHoleSize + 70, 200) \
+                    + ringRadius * random.random()
             x = con.SCREEN_W/2.0 + spawnRadius * math.cos(angle)
             y = con.SCREEN_H/2.0 + spawnRadius * math.sin(angle)
             
             self.po.pos = V3(x,y)
-            spawnVelocity = 200.0
-            self.po.v = V3(spawnVelocity*math.sin(angle+math.pi/2.0),
-                    spawnVelocity*math.cos(angle+math.pi/2.0))
+            spawnVelocity = 300.0
+            self.po.v = V3(spawnVelocity*math.sin(angle),
+                    spawnVelocity*math.cos(angle))
             if random.random() > 0.5: self.po.v *= -1
             self.po.f = V3()
             self.po.a = V3()
@@ -64,7 +64,8 @@ class Player(object):
 
 	    if game.vectorToMiddle(self.po.pos + V3(self.hw, self.hh)).len() \
                     < game.blackHoleSize:
-                self.respawn()
+                self.respawn(game)
+                self.livesLeft -= 1
                 game.blackHoleSize += con.BLACK_HOLE_INCREASE_BY_PLAYER
             
             pos = self.po.pos
@@ -183,23 +184,11 @@ class Player(object):
             vDiff = -(b.po.m * b.BULLET_SPEED) / self.po.m
             self.po.v += V3(dx, dy) * vDiff
         
-    
     def draw(self, game, surface, img, fnt):
-        if self.po:
-            x, y = self.po.pos.x, self.po.pos.y
-            #height = self.h * max(0, self.po.hp) / self.po.maxHp
-            height = self.h
-        else:
-            height = self.h
+        x, y = self.po.pos.x, self.po.pos.y
         
-        if self.id == 0 or self.id == 1:
-            area=(self.id*self.w,0, self.w, height)
-        else:
-            area=(0,0,  30, 40) #he-man
-        
-        surface.blit(img["players"],
-                #dest=(x, y), area=None)
-                dest=(x, y), area=area)
+        area = getAreaFromId(self.id, self.w, self.h)
+        surface.blit(img["players"], dest=(x, y), area=area)
         
         #draw text above head
         if self.po:
@@ -209,3 +198,23 @@ class Player(object):
         percentTextSurface = fnt.render(percentText, False, con.FONT_COLOR)
         surface.blit(percentTextSurface,
                 (self.po.pos.x+1, self.po.pos.y - 20))
+        
+#separate
+def getAreaFromId(id, w, h):
+    #id += 10
+    
+    if id <= 8:
+        startX = id * w
+        startY = 0
+    elif id <= 14:
+        startX = (id - 9) * w
+        startY = 42
+    elif id <= 22:
+        startX = (id - 15) * w
+        startY = 2*42
+    else:
+        startX = 0
+        startY = 0
+        
+    return [startX, startY, w, h]
+
