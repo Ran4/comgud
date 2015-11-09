@@ -13,10 +13,10 @@ from bullet import Bullet
 V3 = Vector3
 
 class Player(object):
-    def __init__(self):
+    def __init__(self, id=None):
         self.po = PhysicsObject(m=50.0, owner=self)
         self.po.invulnerable = False
-        self.id = None
+        self.id = id
         self.numGuns = 2
         
         self.favoriteFruit = None
@@ -26,11 +26,13 @@ class Player(object):
         self.hw = self.w / 2
         self.hh = self.h / 2
         
+        self.respawn()
+        
+    def respawn(self):
         self.TIME_BETWEEN_SHOTS = 8
         self.timeUntilNextShot = 0
         self.timeUntilNextShot2 = 0
         
-    def respawn(self):
         if self.po:
             self.po.gravityFactor = con.GRAVITY_FACTOR_PLAYER_DEFAULT
             

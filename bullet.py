@@ -16,7 +16,7 @@ class Bullet(object):
         self.po.invulnerable = True
         self.id = None
         self.bulletType = None
-        self.damage = 1
+        self.damage = 2
         #self.BULLET_SPEED = 900.0
         #self.BULLET_SPEED = 600.0
         self.BULLET_SPEED = 700.0

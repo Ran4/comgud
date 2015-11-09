@@ -27,16 +27,7 @@ class Game(object):
         self.powerups = []
         
         for i in range(con.NUM_PLAYERS):
-            self.players.append(player.Player())
-            
-            spawnBorder = 50
-            paneWidth = (con.SCREEN_W - spawnBorder) / (con.NUM_PLAYERS + 1.)
-            x = (i+1)*paneWidth
-            
-            self.players[-1].po.pos = V3(x, 580)
-            self.players[-1].id = i
-            startVY = 300*(1 if x < self.screenw/2.0 else -1)
-            self.players[-1].po.v = V3(0.0, startVY)
+            self.players.append(player.Player(id=i))
             
             if i == 0:
                 self.players[-1].favoriteFruit = "strawberry"
