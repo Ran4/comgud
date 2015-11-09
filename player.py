@@ -118,23 +118,33 @@ class Player(object):
                     if key[K_s]: down = 1.
                     if key[K_a]: left = 1.
                     if key[K_d]: right = 1.
-                elif gun == 1:
-                    if key[K_t]: up = 1.
-                    if key[K_g]: down = 1.
-                    if key[K_f]: left = 1.
-                    if key[K_h]: right = 1.
+                #elif gun == 1:
+                #    if key[K_t]: up = 1.
+                #    if key[K_g]: down = 1.
+                #    if key[K_f]: left = 1.
+                #    if key[K_h]: right = 1.
                     
-            if self.id == 1: #player 2
+            elif self.id == 1: #player 2
                 if gun == 0:
-                    if key[K_i]: up = 1.
-                    if key[K_k]: down = 1.
-                    if key[K_j]: left = 1.
-                    if key[K_l]: right = 1.
-                elif gun == 1:
                     if key[K_UP]: up = 1.
                     if key[K_DOWN]: down = 1.
                     if key[K_LEFT]: left = 1.
                     if key[K_RIGHT]: right = 1.
+                #elif gun == 1:
+                #    if key[K_i]: up = 1.
+                #    if key[K_k]: down = 1.
+                #    if key[K_j]: left = 1.
+                #    if key[K_l]: right = 1.
+            elif self.id == 2 and gun == 0:
+                if key[K_i]: up = 1.
+                if key[K_k]: down = 1.
+                if key[K_j]: left = 1.
+                if key[K_l]: right = 1.
+            elif self.id == 3 and gun == 0:
+                if key[K_t]: up = 1.
+                if key[K_g]: down = 1.
+                if key[K_f]: left = 1.
+                if key[K_h]: right = 1.
             
             if left and right:
                 left, right = 0, 0
@@ -169,7 +179,7 @@ class Player(object):
             b.owner = self.id
             b.bulletType = self.favoriteFruit
             
-            if gun == 0:
+            if gun == 1: #gun 1 is like jetpack...
                 #b.isVisisble = False
                 b.ttl = 4
                 r = 4.0
