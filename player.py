@@ -23,10 +23,32 @@ class Player(object):
         
         self.w = 30
         self.h = 40
+        self.hw = self.w / 2
+        self.hh = self.h / 2
         
         self.TIME_BETWEEN_SHOTS = 8
         self.timeUntilNextShot = 0
         self.timeUntilNextShot2 = 0
+        
+    def respawn(self):
+        if self.po:
+            self.po.gravityFactor = con.GRAVITY_FACTOR_PLAYER_DEFAULT
+            
+            angle = 2*math.pi*random.random()
+            ringRadius = 300
+            spawnRadius = 200 + ringRadius * random.random()
+            x = con.SCREEN_W/2.0 + spawnRadius * math.cos(angle)
+            y = con.SCREEN_H/2.0 + spawnRadius * math.sin(angle)
+            
+            self.po.pos = V3(x,y)
+            spawnVelocity = 200.0
+            self.po.v = V3(spawnVelocity*math.sin(angle+math.pi/2.0),
+                    spawnVelocity*math.cos(angle+math.pi/2.0))
+            if random.random() > 0.5: self.po.v *= -1
+            self.po.f = V3()
+            self.po.a = V3()
+            
+            self.po.hp = self.po.maxHp
 
     def randomPosition(self):
         if self.po:
@@ -37,8 +59,9 @@ class Player(object):
         if self.po:
             self.po.updatePhysics(game)
 
-	    if game.vectorToMiddle(self.po.pos).len() < con.BLACK_HOLE_SIZE:
-		    self.randomPosition()
+	    if game.vectorToMiddle(self.po.pos + V3(self.hw, self.hh)).len() \
+                    < con.BLACK_HOLE_SIZE:
+                self.respawn()
             
             pos = self.po.pos
             if pos.x < 0 and self.po.v.x < 0:
@@ -81,6 +104,7 @@ class Player(object):
         if not self.po:
             return
         
+        #shooting
         for gun in range(self.numGuns):
             left, right, up, down = 0, 0, 0, 0
             if self.id == 0: #player 1
@@ -159,7 +183,8 @@ class Player(object):
     def draw(self, game, surface, img, fnt):
         if self.po:
             x, y = self.po.pos.x, self.po.pos.y
-            height = self.h * max(0, self.po.hp) / self.po.maxHp
+            #height = self.h * max(0, self.po.hp) / self.po.maxHp
+            height = self.h
         else:
             height = self.h
         
@@ -171,3 +196,12 @@ class Player(object):
         surface.blit(img["players"],
                 #dest=(x, y), area=None)
                 dest=(x, y), area=area)
+        
+        #draw text above head
+        if self.po:
+            percentText = "%d%%" % (100.0*(self.po.gravityFactor - 1.0))
+        else:
+            percentText = "NO BODY"
+        percentTextSurface = fnt.render(percentText, False, con.FONT_COLOR)
+        surface.blit(percentTextSurface,
+                (self.po.pos.x+1, self.po.pos.y - 20))

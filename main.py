@@ -27,7 +27,8 @@ def main():
     pygame.mixer.init()
     
     try:
-        fnt = pygame.font.Font(None,22) #font of size (=height) 22
+        #fnt = pygame.font.Font(None, 32) #font of size (=height) 32
+        fnt = pygame.font.Font(None, 24) #font of size (=height) 32
         print "Loaded default font"
     except: #couldn't load default font, tries to load manually
         print "Couldn't load default font"
@@ -82,6 +83,8 @@ def loadImages():
     ["players", opj("data","players","players.png")],
     ["strawberry", opj("data","bullets","strawberry.png")],
     ["banana", opj("data","bullets","banana.png")],
+    ["powerup_health", opj("data","powerups","health.png")],
+    ["powerup_gun", opj("data","powerups","gun.png")],
     ]
     img = {}
     for name in imagenames:

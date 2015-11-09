@@ -16,9 +16,10 @@ class Bullet(object):
         self.po.invulnerable = True
         self.id = None
         self.bulletType = None
-        self.damage = 6
+        self.damage = 1
         #self.BULLET_SPEED = 900.0
-        self.BULLET_SPEED = 600.0
+        #self.BULLET_SPEED = 600.0
+        self.BULLET_SPEED = 700.0
         self.owner = None
 	self.isVisisble = True
 	#self.ttl = None
@@ -43,16 +44,24 @@ class Bullet(object):
                 self.markedForRemoval = True
                 return
                 
+            #Collision detection with players
             for player in game.players:
                 if self.owner != player.id and player.po and \
                         (self.po.pos-player.po.pos).len() < con.COLLISION_DIST:
                     #print "player %s was hit!" % player.id
                     
                     if player.id == 1: #HANDICAP FOR P2
-                        player.po.hp -= self.damage / 2.0
+                        #player.po.hp -= self.damage / 2.0
+                        player.po.hp -= self.damage
                     else:
                         player.po.hp -= self.damage
-                    
+                        
+                    #p=mv => m1 v1 = m2 v2 => v1 = m2 v2 / v1
+                    vDiff = (self.po.m * self.BULLET_SPEED) / player.po.m
+                    player.po.v += self.po.v.normalize() * vDiff
+                    #player.po.gravityFactor += con.GRAVITY_FACTOR_PLAYER_INCREASE_PER_HIT
+                    player.po.gravityFactor += self.damage/100.0
+                    #check for player dying
                     if player.po.hp <= 11.0: #random value since we're not
                                                 #drawing from the top
                         player.po.hp = player.po.maxHp

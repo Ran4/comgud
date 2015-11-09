@@ -7,6 +7,7 @@ import constants as con
 from libvector3 import Vector3
 V3 = Vector3
 import player
+from powerup import Powerup
 
 class Game(object):
     def __init__(self):
@@ -23,6 +24,7 @@ class Game(object):
         
         self.players = []
         self.bullets = []
+        self.powerups = []
         
         for i in range(con.NUM_PLAYERS):
             self.players.append(player.Player())
@@ -33,6 +35,8 @@ class Game(object):
             
             self.players[-1].po.pos = V3(x, 580)
             self.players[-1].id = i
+            startVY = 300*(1 if x < self.screenw/2.0 else -1)
+            self.players[-1].po.v = V3(0.0, startVY)
             
             if i == 0:
                 self.players[-1].favoriteFruit = "strawberry"
@@ -49,10 +53,19 @@ class Game(object):
         self.gameTime += 1
         self.dt = 1/60.
         
+        if self.gameTime > 1 and self.gameTime % con.POWERUP_SPAWN_DELAY == 0:
+            p = Powerup()
+            p.respawn()
+            self.powerups.append(p)
+        
+        for powerup in self.powerups:
+            powerup.update(self, key)
+        
         for bullet in self.bullets:
             bullet.update(self, key)
         
         self.bullets = filter(lambda x: not x.markedForRemoval, self.bullets)
+        self.powerups = filter(lambda x: not x.markedForRemoval, self.powerups)
             
         for player in self.players:
             player.update(self, key)
@@ -69,9 +82,19 @@ class Game(object):
             
         for player in self.players:
             player.draw(self, surface, img, fnt)
+            
+        for powerup in self.powerups:
+            powerup.draw(self, surface, img, fnt)
 
         pygame.draw.circle(surface, con.BLACK_HOLE_COLOR, (self.screenw/2, self.screenh/2),
             con.BLACK_HOLE_SIZE, 0)
+        
+        #draw text
+        percentText = ", ".join(["p%s: %s %%" % \
+                (player.id + 1, 100*(player.po.gravityFactor - 1.0))
+                for player in self.players])
+        percentTextSurface = fnt.render(percentText, False, con.FONT_COLOR)
+        surface.blit(percentTextSurface, (5,self.screenh - 40))
 
     def vectorToMiddle(self, otherVec):
         return V3(self.screenw/2.0, self.screenh/2.0) - otherVec

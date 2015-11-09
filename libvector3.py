@@ -21,10 +21,18 @@ class Vector3:
         return math.sqrt(self.x**2 + self.y**2 + self.z**2)
         
     def normalize(self):
-        len = self.len()
-        self.x /= len
-        self.y /= len
-        self.z /= len
+        length = self.len()
+        if length > 0:
+            return Vector3(self.x / length, self.y / length, self.z / length)
+        else:
+            return Vector3()
+    
+    def inormalize(self): #in-place normalization
+        length = self.len()
+        if length > 0:
+            self.x /= length
+            self.y /= length
+            self.z /= length
         return self
         
     def irotate(self, a=None):
