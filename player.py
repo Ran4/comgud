@@ -27,10 +27,18 @@ class Player(object):
         self.TIME_BETWEEN_SHOTS = 8
         self.timeUntilNextShot = 0
         self.timeUntilNextShot2 = 0
+
+    def randomPosition(self):
+        if self.po:
+            self.po.pos.x = float(random.randint(0, con.SCREEN_W))
+            self.po.pos.y = float(random.randint(0, con.SCREEN_H))
         
     def update(self, game, key):
         if self.po:
             self.po.updatePhysics(game)
+
+	    if game.vectorToMiddle(self.po.pos).len() < con.BLACK_HOLE_SIZE:
+		    self.randomPosition()
             
             pos = self.po.pos
             if pos.x < 0 and self.po.v.x < 0:
@@ -131,6 +139,14 @@ class Player(object):
             b.po.v = copy.copy(self.po.v) + V3(dx, dy) * b.BULLET_SPEED
             b.owner = self.id
             b.bulletType = self.favoriteFruit
+            
+            if gun == 0:
+                #b.isVisisble = False
+                b.ttl = 4
+                r = 4.0
+                b.BULLET_SPEED *= r
+                b.po.m /= r
+
             game.bullets.append(b)
             
             #p = mv const.

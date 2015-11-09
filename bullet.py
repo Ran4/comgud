@@ -11,13 +11,22 @@ V3 = Vector3
 
 class Bullet(object):
     def __init__(self):
-        self.po = PhysicsObject(m=2.7, owner=self)
+        #self.po = PhysicsObject(m=2.7, owner=self)
+        self.po = PhysicsObject(m=1.7, owner=self)
         self.po.invulnerable = True
         self.id = None
         self.bulletType = None
         self.damage = 6
-        self.BULLET_SPEED = 900.0
+        #self.BULLET_SPEED = 900.0
+        self.BULLET_SPEED = 600.0
         self.owner = None
+	self.isVisisble = True
+	#self.ttl = None
+	self.ttl = 120
+
+        #self.po.gravityFactor = 5.0
+        #self.po.gravityFactor = 0.0
+        self.po.gravityFactor = 0.2
         
         self.markedForRemoval = False
         
@@ -28,7 +37,9 @@ class Bullet(object):
             if pos.x < -con.BULLET_REMOVE_BORDER or \
                     pos.x > game.screenw + con.BULLET_REMOVE_BORDER or \
                     pos.y < -con.BULLET_REMOVE_BORDER or \
-                    pos.y > game.screenh + con.BULLET_REMOVE_BORDER:
+                    pos.y > game.screenh + con.BULLET_REMOVE_BORDER or \
+		    (pos - V3(game.screenw/2.0, game.screenh/2.0)).len() < 48.0 or \
+		    self.ttl is not None and self.ttl <= 0:
                 self.markedForRemoval = True
                 return
                 
@@ -49,12 +60,15 @@ class Bullet(object):
                         
                     self.markedForRemoval = True
                     return
+
+            if self.ttl is not None:
+                self.ttl -= 1
             
         #self.updateControls(game, key)
             
     def draw(self, game, surface, img, fnt):
-        if not self.po: #has no body, can't draw
-            pass
+        if not self.po or not self.isVisisble: #has no body, can't draw
+            return
         
         x, y = self.po.pos.x, self.po.pos.y
             

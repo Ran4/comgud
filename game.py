@@ -69,3 +69,9 @@ class Game(object):
             
         for player in self.players:
             player.draw(self, surface, img, fnt)
+
+        pygame.draw.circle(surface, con.BLACK_HOLE_COLOR, (self.screenw/2, self.screenh/2),
+            con.BLACK_HOLE_SIZE, 0)
+
+    def vectorToMiddle(self, otherVec):
+        return V3(self.screenw/2.0, self.screenh/2.0) - otherVec
