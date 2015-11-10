@@ -29,12 +29,13 @@ class Game(object):
         self.powerups = []
         
         for i in range(con.NUM_PLAYERS):
-            self.players.append(player.Player(game=self, id=i))
-            
             if i == 0:
-                self.players[-1].favoriteFruit = "strawberry"
+                ff = "banana"
             elif i == 1:
-                self.players[-1].favoriteFruit = "banana"
+                #ff = "strawberry"
+                ff = "shotgun"
+            self.players.append(player.Player(game=self, id=i, favoriteFruit=ff))
+            
                 
     def reset(self):
         for player in self.players:
@@ -94,6 +95,9 @@ class Game(object):
 
         pygame.draw.circle(surface, con.BLACK_HOLE_COLOR, (self.screenw/2, self.screenh/2),
             int(self.blackHoleSize), 0)
+        #draw event horizon
+        pygame.draw.circle(surface, con.BLACK_HOLE_COLOR, (self.screenw/2, self.screenh/2),
+            con.EVENT_HORIZON_RADIUS, 1)
         
         #draw text
         #percentText = ", ".join(["p%s: %s %%" % \

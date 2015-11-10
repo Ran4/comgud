@@ -88,3 +88,6 @@ class Bullet(object):
         elif self.bulletType == "banana":
             surface.blit(img["banana"],
                     dest=(x, y), area=None)
+        else:
+            surface.blit(img["banana"],
+                    dest=(x, y), area=None)

@@ -26,7 +26,15 @@ class PhysicsObject(object):
         middleOfScreen = V3(game.screenw/2.0, game.screenh/2.0)
         pullStrength = con.BLACK_HOLE_GRAVITY_STRENGTH * self.gravityFactor**2
         f = (middleOfScreen - self.pos) * pullStrength
-        self.f += f
+        
+        if hasattr(self.owner, "favoriteFruit") and self.owner.id == 1:
+            pass
+            #print "vectoMiddle:", game.vectorToMiddle(self.pos).len()
+           
+        if game.vectorToMiddle(self.pos).len() < con.EVENT_HORIZON_RADIUS:
+            self.f += f
+        else:
+            self.f += f*0.25
         
         #self.v += f * 1e-4 * (self.gravityFactor)**2
         if hasattr(self.owner, "type"):

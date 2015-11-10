@@ -11,7 +11,7 @@ from bullet import Bullet
 V3 = Vector3
 
 class Player(object):
-    def __init__(self, game, id=None):
+    def __init__(self, game, id=None, favoriteFruit=None):
         #self.po = PhysicsObject(m=50.0, owner=self)
         self.po = PhysicsObject(m=50.0, owner=self)
         self.po.invulnerable = False
@@ -19,7 +19,7 @@ class Player(object):
         self.numGuns = 2
         self.livesLeft = con.NUM_PLAYER_LIVES
         
-        self.favoriteFruit = None
+        self.favoriteFruit = favoriteFruit
         
         self.w = 30
         self.h = 40
@@ -29,7 +29,10 @@ class Player(object):
         self.respawn(game)
         
     def respawn(self, game):
-        self.TIME_BETWEEN_SHOTS = 24
+        #self.TIME_BETWEEN_SHOTS = 24
+        self.TIME_BETWEEN_SHOTS = 20
+        if self.favoriteFruit == "shotgun":
+            self.TIME_BETWEEN_SHOTS = 42
         self.timeUntilNextShot = 0
         self.timeUntilNextShot2 = 0
         
@@ -53,11 +56,6 @@ class Player(object):
             
             self.po.hp = self.po.maxHp
 
-    def randomPosition(self):
-        if self.po:
-            self.po.pos.x = float(random.randint(0, con.SCREEN_W))
-            self.po.pos.y = float(random.randint(0, con.SCREEN_H))
-        
     def update(self, game, key):
         if self.po:
             self.po.updatePhysics(game)
@@ -67,7 +65,32 @@ class Player(object):
                 self.respawn(game)
                 self.livesLeft -= 1
                 game.blackHoleSize += con.BLACK_HOLE_INCREASE_BY_PLAYER
+                
+            """
+            #move player to other side if outside
+            pos = self.po.pos
+            if pos.x + self.w < 0:
+                pos.x = game.screenw
+            elif pos.x >= game.screenw:
+                pos.x = 0 - self.w
+            if pos.y + self.h < 0:
+                pos.y = game.screenh
+            elif pos.y >= game.screenh:
+                pos.y = 0 - self.h
+            """
             
+            #bouncy walls
+            pos = self.po.pos
+            if pos.x < 0 and self.po.v.x < 0:
+                self.po.v.x *= con.BOUNCE_FACTOR_ON_WALLS
+            elif pos.x + self.w >= game.screenw and self.po.v.x > 0:
+                self.po.v.x *= con.BOUNCE_FACTOR_ON_WALLS
+            if pos.y < 0 and self.po.v.y < 0:
+                self.po.v.y *= con.BOUNCE_FACTOR_ON_WALLS
+            elif pos.y + self.h >= game.screenh and self.po.v.y > 0:
+                self.po.v.y *= con.BOUNCE_FACTOR_ON_WALLS
+                
+            """
             pos = self.po.pos
             if pos.x < 0 and self.po.v.x < 0:
                 self.po.v.x *= -0.9
@@ -96,6 +119,7 @@ class Player(object):
                     self.po.v.x *= 0.7
                     
                     
+            """
             self.po.v *= con.PLAYER_DRAG
             
         self.updateControls(game, key)
@@ -118,11 +142,11 @@ class Player(object):
                     if key[K_s]: down = 1.
                     if key[K_a]: left = 1.
                     if key[K_d]: right = 1.
-                #elif gun == 1:
-                #    if key[K_t]: up = 1.
-                #    if key[K_g]: down = 1.
-                #    if key[K_f]: left = 1.
-                #    if key[K_h]: right = 1.
+                elif gun == 1:
+                    if key[K_t]: up = 1.
+                    if key[K_g]: down = 1.
+                    if key[K_f]: left = 1.
+                    if key[K_h]: right = 1.
                     
             elif self.id == 1: #player 2
                 if gun == 0:
@@ -130,21 +154,23 @@ class Player(object):
                     if key[K_DOWN]: down = 1.
                     if key[K_LEFT]: left = 1.
                     if key[K_RIGHT]: right = 1.
-                #elif gun == 1:
-                #    if key[K_i]: up = 1.
-                #    if key[K_k]: down = 1.
-                #    if key[K_j]: left = 1.
-                #    if key[K_l]: right = 1.
+                elif gun == 1:
+                    if key[K_i]: up = 1.
+                    if key[K_k]: down = 1.
+                    if key[K_j]: left = 1.
+                    if key[K_l]: right = 1.
             elif self.id == 2 and gun == 0:
-                if key[K_i]: up = 1.
-                if key[K_k]: down = 1.
-                if key[K_j]: left = 1.
-                if key[K_l]: right = 1.
+                pass
+                #if key[K_i]: up = 1.
+                #if key[K_k]: down = 1.
+                #if key[K_j]: left = 1.
+                #if key[K_l]: right = 1.
             elif self.id == 3 and gun == 0:
-                if key[K_t]: up = 1.
-                if key[K_g]: down = 1.
-                if key[K_f]: left = 1.
-                if key[K_h]: right = 1.
+                pass
+                #if key[K_t]: up = 1.
+                #if key[K_g]: down = 1.
+                #if key[K_f]: left = 1.
+                #if key[K_h]: right = 1.
             
             if left and right:
                 left, right = 0, 0
@@ -171,28 +197,45 @@ class Player(object):
             if gun == 0:
                 self.timeUntilNextShot += self.TIME_BETWEEN_SHOTS
             elif gun == 1:
-                self.timeUntilNextShot2 += self.TIME_BETWEEN_SHOTS
+                if self.favoriteFruit == "shotgun": #ugly special case
+                    self.timeUntilNextShot2 += 20
+                else:
+                    self.timeUntilNextShot2 += self.TIME_BETWEEN_SHOTS
             
-            b = Bullet()
-            b.po.pos = copy.copy(self.po.pos)
-            b.po.v = copy.copy(self.po.v) + V3(dx, dy) * b.BULLET_SPEED
-            b.owner = self.id
-            b.bulletType = self.favoriteFruit
+            if self.favoriteFruit == "shotgun" and gun != 1:
+                for degree in range(-10, 10, 3):
+                    a = math.radians(degree)
+                    
+                    b = Bullet()
+                    b.po.pos = copy.copy(self.po.pos)
+                    b.po.v = copy.copy(self.po.v) + (V3(dx, dy).rotate(a)) \
+                            * b.BULLET_SPEED
+                    b.owner = self.id
+                    b.bulletType = self.favoriteFruit
+                    game.bullets.append(b)
+                    
+                    vDiff = -0.3*(b.po.m * b.BULLET_SPEED) / self.po.m
+                    self.po.v += V3(dx, dy) * vDiff
+            else:
+                b = Bullet()
+                b.po.pos = copy.copy(self.po.pos)
+                b.po.v = copy.copy(self.po.v) + V3(dx, dy) * b.BULLET_SPEED
+                b.owner = self.id
+                b.bulletType = self.favoriteFruit
+                if gun == 1: #gun 1 is like jetpack...
+                    #b.isVisisble = False
+                    b.ttl = 1
+                    r = 4.0
+                    b.BULLET_SPEED *= -r
+                    b.po.m /= r
+                    
+                game.bullets.append(b)
             
-            if gun == 1: #gun 1 is like jetpack...
-                #b.isVisisble = False
-                b.ttl = 4
-                r = 4.0
-                b.BULLET_SPEED *= r
-                b.po.m /= r
-
-            game.bullets.append(b)
-            
-            #p = mv const.
-            #p1 = p2 => m1 v1 = m2 v2 => v1 = (m2 v2) / m1
-            #where 1 is the player, 2 is the bullet
-            vDiff = -(b.po.m * b.BULLET_SPEED) / self.po.m
-            self.po.v += V3(dx, dy) * vDiff
+                #p = mv const.
+                #p1 = p2 => m1 v1 = m2 v2 => v1 = (m2 v2) / m1
+                #where 1 is the player, 2 is the bullet
+                vDiff = -(b.po.m * b.BULLET_SPEED) / self.po.m
+                self.po.v += V3(dx, dy) * vDiff
         
     def draw(self, game, surface, img, fnt):
         x, y = self.po.pos.x, self.po.pos.y

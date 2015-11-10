@@ -45,7 +45,7 @@ class Vector3:
         return self
         
     def rotate(self, a=None):
-        """Returns a vector rotatet with an angle of a around the z axis
+        """Returns a vector rotated with an angle of a around the z axis
         Use irotate to rotate in-place
         Not sending any argument will rotate by pi,
           eg. v.rotate() == -v"""
