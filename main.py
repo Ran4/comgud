@@ -20,7 +20,7 @@ def setScreen(game, toggle=False):
 def main():
     pygame.init()
     clock = pygame.time.Clock()
-    pygame.display.set_caption("Python+Pygame game")
+    pygame.display.set_caption("ComGud - a CowsTheory prototype")
     
     game = Game()
     screen = setScreen(game)
